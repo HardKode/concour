@@ -1,0 +1,113 @@
+{%  extends 'base.html' %}
+{% block page %}
+
+
+
+      <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+
+		<div class="col-sm-6 col-md-6">
+            <form class="navbar-form" role="search" method="POST" action="{{url_for('immersion')}}">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="rechercher" name="q_place">
+                <div class="input-group-btn">
+                    <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                </div>
+            </div>
+            </form>
+        </div>
+
+
+        <div id="navbar" class="navbar-collapse collapse">
+
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="glyphicon glyphicon-th-large"></i> Categories <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#"><i class="glyphicon glyphicon-education"></i> Immersion</a></li>
+                <li><a href="#"><i class="glyphicon glyphicon-bed"></i> Tourisme</a></li>
+                <li><a href="#"><i class="glyphicon glyphicon-cutlery"></i> Ecole minoritaire</a></li>
+                <li><a href="#"><i class="glyphicon glyphicon-plane"></i> Loisir et sport</a></li>
+                <li><a href="#"><i class="glyphicon glyphicon-plus-sign"></i> Programme d'etude</a></li>
+                <li><a href="#"><i class="glyphicon glyphicon-plus-sign"></i> Service minicipaux</a></li>
+                <li><a href="#"><i class="glyphicon glyphicon-plus-sign"></i> langues des service</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+
+      </div>
+    </nav>
+
+
+
+<!--  Map -->
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmf1cA91JP13LEU3VFSDeO9AoweEnRyfo&libraries=places"></script>
+<div id="map"></div>
+<script type="text/javascript">
+    var locations = [
+      {% for place in results %}
+       [ '{{ place.name }}', {{ place.lat }}, {{ place.lng }} ],
+    {% endfor %}
+
+    ];
+
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 8,
+      center: new google.maps.LatLng(46.08, -64.77),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+    var infowindow = new google.maps.InfoWindow();
+
+    var marker, i;
+
+    for (i = 0; i < locations.length; i++) {
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+        map: map
+      });
+
+      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+        return function() {
+          infowindow.setContent(locations[i][0]);
+          infowindow.open(map, marker);
+        }
+      })(marker, i));
+    }
+  </script>
+
+
+
+
+
+<!--<div class="container">
+
+    <div class="page-header"></div>
+
+        {% for place in results %}
+        <ul class="nav nav-pills" role="tablist">
+          <li class="active"><a>{{ place.service }} </a></li>
+          <li><a>Protein: <span class="badge">{{ place.url }}</span></a></li>
+          <li><a>Carbohydrates: <span class="badge">{{ place.address }}</span></a></li>
+          <li><a>Fat: <span class="badge">{{ place.lat }}</span></a></li>
+          <li><a>Calories: <span class="badge">{{ place.lng }}</span></a></li>
+        </ul>
+       <div class="page-header"></div>
+        {% endfor %}
+
+</div>-->
+
+{% endblock %}
+
